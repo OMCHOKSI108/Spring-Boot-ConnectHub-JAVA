@@ -184,18 +184,43 @@ public class DatabaseManager {
     }
 
     // Transaction management methods
-    public void beginTransaction() throws SQLException {
-        getConnection().setAutoCommit(false);
+    public synchronized void beginTransaction() {
+        try {
+            Connection conn = getConnection();
+            if (conn != null) {
+                conn.setAutoCommit(false);
+                LOGGER.fine("Transaction started");
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Error starting transaction: " + e.getMessage());
+        }
     }
 
-    public void commitTransaction() throws SQLException {
-        getConnection().commit();
-        getConnection().setAutoCommit(true);
+    public synchronized void commitTransaction() {
+        try {
+            Connection conn = getConnection();
+            if (conn != null) {
+                conn.commit();
+                conn.setAutoCommit(true);
+                LOGGER.fine("Transaction committed");
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Error committing transaction: " + e.getMessage());
+            rollbackTransaction();
+        }
     }
 
-    public void rollbackTransaction() throws SQLException {
-        getConnection().rollback();
-        getConnection().setAutoCommit(true);
+    public synchronized void rollbackTransaction() {
+        try {
+            Connection conn = getConnection();
+            if (conn != null) {
+                conn.rollback();
+                conn.setAutoCommit(true);
+                LOGGER.fine("Transaction rolled back");
+            }
+        } catch (SQLException e) {
+            LOGGER.severe("Error rolling back transaction: " + e.getMessage());
+        }
     }
 
     // Health check method

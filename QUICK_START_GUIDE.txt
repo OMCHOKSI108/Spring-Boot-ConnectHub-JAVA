@@ -1,0 +1,88 @@
+==========================================================
+        ConnectHUB - Quick Start Guide
+==========================================================
+
+HOW TO CHAT WITH MULTIPLE USERS
+------------------------------
+
+STEP 1: Start the Server (Do this first!)
+----------------------------------------
+1. Open a new terminal/command prompt
+2. Go to your project folder:
+   cd D:\WORKSPACE\JAVA\ConnectHUB
+3. Start the server:
+   java -cp ".;postgresql-42.7.7.jar" EnhancedServer
+4. You should see "Server started on port 8888"
+
+STEP 2: Start First User (User 1)
+--------------------------------
+1. Open a NEW terminal/command prompt
+2. Go to project folder:
+   cd D:\WORKSPACE\JAVA\ConnectHUB
+3. Start client:
+   java -cp ".;postgresql-42.7.7.jar" EnhancedClient
+4. Register or login:
+   REGISTER user1 password1 "User One"
+   or
+   LOGIN user1 password1
+
+STEP 3: Start Second User (User 2)
+---------------------------------
+1. Open another NEW terminal/command prompt
+2. Go to project folder:
+   cd D:\WORKSPACE\JAVA\ConnectHUB
+3. Start another client:
+   java -cp ".;postgresql-42.7.7.jar" EnhancedClient
+4. Register or login:
+   REGISTER user2 password2 "User Two"
+   or
+   LOGIN user2 password2
+
+HOW TO CHAT
+-----------
+1. Broadcast Message (everyone sees it):
+   - Just type your message and press Enter
+
+2. Private Message:
+   - Type: /msg username your_message
+   Example: /msg user2 Hello there!
+
+3. See Who's Online:
+   - Type: /list
+
+4. Share Files:
+   - Type: /sendfile filepath
+   Example: /sendfile D:\myfile.txt
+
+USEFUL COMMANDS
+--------------
+/help   : Show all commands
+/list   : Show online users
+/status : Check connection
+/quit   : Exit chat
+
+TROUBLESHOOTING
+--------------
+1. "Connection refused"?
+   - Make sure server is running first
+
+2. "Login failed"?
+   - Check username and password
+   - Register if new user
+
+3. "Can't see other users"?
+   - Type /list to refresh
+   - Make sure both users are connected
+
+REMEMBER
+--------
+1. Always start SERVER first
+2. Open NEW terminal for each user
+3. You can have multiple users chatting at once
+4. Use /list to see who's online
+
+Need More Help?
+--------------
+Type /help in the chat for more commands
+
+==========================================================

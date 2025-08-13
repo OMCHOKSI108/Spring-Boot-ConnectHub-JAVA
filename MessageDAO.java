@@ -74,11 +74,7 @@ public class MessageDAO {
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error saving message", e);
-            try {
-                dbManager.rollbackTransaction();
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Error rolling back transaction", ex);
-            }
+            dbManager.rollbackTransaction();
         }
         return false;
     }
@@ -194,11 +190,7 @@ public class MessageDAO {
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error deleting message: " + messageId, e);
-            try {
-                dbManager.rollbackTransaction();
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Error rolling back transaction", ex);
-            }
+            dbManager.rollbackTransaction();
         }
         return false;
     }

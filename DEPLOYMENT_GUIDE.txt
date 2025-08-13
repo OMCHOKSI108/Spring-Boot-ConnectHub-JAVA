@@ -1,0 +1,110 @@
+==========================================================
+            ConnectHUB - Deployment Guide
+==========================================================
+
+1. RAILWAY DEPLOYMENT (Recommended)
+---------------------------------
+Railway.app provides a simple way to deploy Java applications with PostgreSQL.
+
+Steps:
+1. Create Railway Account:
+   - Go to railway.app
+   - Sign up using GitHub
+
+2. Prepare Your Repository:
+   - Push your code to GitHub
+   - Make sure .gitignore is properly set up
+   - Ensure postgresql-42.7.7.jar is included
+
+3. Create Railway Project:
+   - Click "New Project" in Railway dashboard
+   - Choose "Deploy from GitHub repo"
+   - Select your ConnectHUB repository
+
+4. Add PostgreSQL Database:
+   - Click "New" → "Database" → "PostgreSQL"
+   - Railway will automatically provide DATABASE_URL
+
+5. Configure Environment Variables:
+   Set these in Railway dashboard:
+   - PORT=8888 (or your preferred port)
+   - DATABASE_URL (automatically set by Railway)
+
+6. Update application.properties:
+   The application is already configured to use Railway's
+   DATABASE_URL when deployed.
+
+7. Deploy:
+   - Railway will automatically deploy when you push to main
+   - Monitor deployment in Railway dashboard
+
+2. HEROKU DEPLOYMENT (Alternative)
+--------------------------------
+Similar steps to Railway, but you'll need:
+- Procfile with: web: java -cp ".;postgresql-42.7.7.jar" EnhancedServer
+- system.properties with: java.runtime.version=17
+
+3. MANUAL VPS DEPLOYMENT
+-----------------------
+If deploying to your own server:
+
+1. Server Requirements:
+   - Java 17 or later
+   - PostgreSQL 12 or later
+   - 1GB RAM minimum
+   - Port 8888 available
+
+2. Setup Steps:
+   a) Install Java:
+      sudo apt update
+      sudo apt install openjdk-17-jdk
+
+   b) Install PostgreSQL:
+      sudo apt install postgresql
+
+   c) Configure Database:
+      sudo -u postgres psql
+      CREATE DATABASE connecthub_db;
+      CREATE USER connecthub_user WITH PASSWORD 'your_password';
+      GRANT ALL PRIVILEGES ON DATABASE connecthub_db TO connecthub_user;
+
+   d) Upload Files:
+      - Upload all .java files
+      - Upload postgresql-42.7.7.jar
+      - Upload config/application.properties
+
+   e) Compile and Run:
+      javac -cp "postgresql-42.7.7.jar" *.java
+      java -cp ".:postgresql-42.7.7.jar" EnhancedServer
+
+4. DEPLOYMENT CHECKLIST
+----------------------
+✓ Database configuration in application.properties
+✓ All required .java files included
+✓ postgresql-42.7.7.jar included
+✓ Proper error handling and logging configured
+✓ Environment variables set up
+✓ Database connection tested
+✓ File permissions set correctly
+✓ Network ports configured and open
+✓ Logging directory exists and is writable
+
+5. MONITORING AND MAINTENANCE
+---------------------------
+- Check logs regularly in the logs/ directory
+- Monitor database connections
+- Keep track of file storage in uploads/ and downloads/
+- Regular database backups recommended
+- Monitor server resources (CPU, RAM, Storage)
+
+6. SCALING CONSIDERATIONS
+------------------------
+- Current setup supports up to 120 concurrent clients
+- Database connection pooling configured
+- File size limits set to 100MB
+- Consider load balancing for high traffic
+
+==========================================================
+For deployment support or issues:
+GitHub Repository: https://github.com/OMCHOKSI108/Spring-Boot-ConnectHub-JAVA
+==========================================================

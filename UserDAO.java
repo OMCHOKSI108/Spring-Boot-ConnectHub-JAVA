@@ -23,8 +23,9 @@ public class UserDAO {
         String sql = "INSERT INTO users (username, password_hash, email, display_name, avatar_url, is_admin, status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = dbManager.getConnection().prepareStatement(sql,
-                Statement.RETURN_GENERATED_KEYS)) {
+        try {
+            PreparedStatement stmt = dbManager.getConnection().prepareStatement(sql,
+                    Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPasswordHash());
             stmt.setString(3, user.getEmail());
@@ -33,26 +34,23 @@ public class UserDAO {
             stmt.setBoolean(6, user.isAdmin());
             stmt.setString(7, user.getStatus());
 
+            dbManager.beginTransaction();
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
                 // Get the generated user ID
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        user.setUserId(generatedKeys.getInt(1));
-                    }
+                ResultSet generatedKeys = stmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    user.setUserId(generatedKeys.getInt(1));
                 }
                 dbManager.commitTransaction();
                 LOGGER.info("User created successfully: " + user.getUsername());
                 return true;
             }
-        } catch (SQLException e) {
+            dbManager.rollbackTransaction();
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error creating user: " + user.getUsername(), e);
-            try {
-                dbManager.rollbackTransaction();
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Error rolling back transaction", ex);
-            }
+            dbManager.rollbackTransaction();
         }
         return false;
     }
@@ -71,7 +69,7 @@ public class UserDAO {
                     return mapResultSetToUser(rs);
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error finding user by username: " + username, e);
         }
         return null;
@@ -116,7 +114,7 @@ public class UserDAO {
             LOGGER.log(Level.SEVERE, "Error updating online status for user ID: " + userId, e);
             try {
                 dbManager.rollbackTransaction();
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 LOGGER.log(Level.SEVERE, "Error rolling back transaction", ex);
             }
         }
@@ -174,13 +172,9 @@ public class UserDAO {
                 LOGGER.info("User updated successfully: " + user.getUsername());
                 return true;
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error updating user: " + user.getUsername(), e);
-            try {
-                dbManager.rollbackTransaction();
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Error rolling back transaction", ex);
-            }
+            dbManager.rollbackTransaction();
         }
         return false;
     }
